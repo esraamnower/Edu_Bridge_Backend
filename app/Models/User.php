@@ -21,8 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone', 'role', 'status', 'verification_code', 'last_login'
     ];
-
+  
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -45,4 +46,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    // العلاقات
+    public function student() { return $this->hasOne(Student::class, 'user_id'); }
+    public function teacher() { return $this->hasOne(Teacher::class, 'user_id'); }
+    public function studentParent() { return $this->hasOne(StudentParent::class, 'user_id'); }
+    public function admin() { return $this->hasOne(Admin::class, 'user_id'); }
+    public function head() { return $this->hasOne(Head::class, 'user_id'); }
 }

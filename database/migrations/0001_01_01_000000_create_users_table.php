@@ -9,27 +9,33 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+  public function up(): void
     {
+        // 1. جدول المستخدمين تبعنا (بعد التعديل)
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
+            $table->id('user_id'); // المفتاح الأساسي
+            $table->string('full_name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
+            $table->string('phone')->nullable();
+            $table->enum('role', ['student', 'teacher', 'parent', 'admin', 'head']);
+            $table->string('status')->default('active');
+            $table->string('verification_code')->nullable();
+            $table->timestamp('last_login')->nullable();
+            $table->timestamps(); 
         });
 
+        // 2. جدول استعادة كلمة المرور (نحتفظ فيه)
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
 
+        // 3. جدول الجلسات لتتبع تسجيل الدخول (نحتفظ فيه)
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
+            $table->foreignId('user_id')->nullable()->index(); // رح يربط تلقائياً مع الـ user_id تبعنا
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');
